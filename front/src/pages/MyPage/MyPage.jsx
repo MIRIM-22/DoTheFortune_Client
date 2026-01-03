@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from "react";
+import React, { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import styles from "./MyPage.module.css";
 
 import Logo from "../../assets/Logo.svg";
@@ -14,6 +15,11 @@ const TABS = [
 export default function MyPage() {
   const [activeTab, setActiveTab] = useState("all");
 
+  // ✅ 탭 알약(인디케이터) 위치/폭 측정용 refs
+  const tabsRef = useRef(null);
+  const tabBtnRefs = useRef({});
+  const [indicator, setIndicator] = useState({ left: 0, width: 0 });
+
   // 더미 데이터 (원하시면 실제 데이터로 교체)
   const results = useMemo(
     () => [
@@ -23,10 +29,6 @@ export default function MyPage() {
       { id: 4, title: "희진님의 정보", type: "compat" },
       { id: 5, title: "희진님의 정보", type: "future" },
       { id: 6, title: "희진님의 정보", type: "relation" },
-      // 여기부터 늘리면 배경(1752x1004)이 자동으로 추가로 겹쳐져요
-      // { id: 7, title: "희진님의 정보", type: "compat" },
-      // { id: 8, title: "희진님의 정보", type: "compat" },
-      // { id: 9, title: "희진님의 정보", type: "compat" },
     ],
     []
   );
@@ -42,6 +44,28 @@ export default function MyPage() {
   const baseRowsCovered = 2; // 기본 큰 배경이 보통 2줄 정도는 커버
   const extraLayers = Math.max(0, rows - baseRowsCovered);
 
+  // ✅ activeTab 바뀔 때마다 알약 위치/폭 계산 (useLayoutEffect라 깜빡임 최소)
+  useLayoutEffect(() => {
+    const updateIndicator = () => {
+      const container = tabsRef.current;
+      const activeBtn = tabBtnRefs.current[activeTab];
+      if (!container || !activeBtn) return;
+
+      const cRect = container.getBoundingClientRect();
+      const bRect = activeBtn.getBoundingClientRect();
+
+      // container 기준 상대 좌표
+      const left = bRect.left - cRect.left;
+      const width = bRect.width;
+
+      setIndicator({ left, width });
+    };
+
+    updateIndicator();
+    window.addEventListener("resize", updateIndicator);
+    return () => window.removeEventListener("resize", updateIndicator);
+  }, [activeTab]);
+
   return (
     <div className={styles.page}>
       {/* 상단 바 */}
@@ -53,13 +77,7 @@ export default function MyPage() {
 
         <button className={styles.iconButton} aria-label="settings">
           {/* 간단한 기어 아이콘(svg) */}
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            aria-hidden="true"
-          >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path
               d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"
               stroke="currentColor"
@@ -78,11 +96,7 @@ export default function MyPage() {
       {/* 프로필 카드 */}
       <section className={styles.profileWrap}>
         <div className={styles.profileBg} aria-hidden="true">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 1744 522"
-            className={styles.svgFull}
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1744 522" className={styles.svgFull}>
             <path
               d="M1729.85 203.569C1830.81 466.439 1371.39 556.032 992.944 510.79C614.494 465.548 45.5198 600.913 0 288.156C0 113.423 71.1979 -65.2798 735.51 32.9942C936.959 62.7953 1597.57 -140.817 1729.85 203.569Z"
               fill="white"
@@ -128,11 +142,7 @@ export default function MyPage() {
           {/* 배경 SVG 스택 (기본 큰 배경 + 추가 배경(겹침)) */}
           <div className={styles.recordsBg} aria-hidden="true">
             <div className={styles.bgStack}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 1752 1454"
-                className={styles.svgFull}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1752 1454" className={styles.svgFull}>
                 <g filter="url(#filter0_d_178_43)">
                   <path
                     d="M739.51 62.9541C940.959 119.816 1601.57 -268.685 1733.85 388.42C1761.54 525.964 1747.08 638.645 1703.71 727.976C1715.6 760.801 1725.72 797.227 1733.85 837.602C1834.81 1339.17 1375.39 1510.12 996.944 1423.79C618.494 1337.47 49.5198 1595.75 4 998.996C4.00001 900.34 10.2364 801.021 36.2285 714.928C19.9671 668.877 8.92232 614.345 4 549.814C4.00003 216.416 75.1984 -124.557 739.51 62.9541Z"
@@ -163,22 +173,13 @@ export default function MyPage() {
                       type="matrix"
                       values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
                     />
-                    <feBlend
-                      mode="normal"
-                      in2="BackgroundImageFix"
-                      result="effect1_dropShadow_178_43"
-                    />
-                    <feBlend
-                      mode="normal"
-                      in="SourceGraphic"
-                      in2="effect1_dropShadow_178_43"
-                      result="shape"
-                    />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_178_43" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_178_43" result="shape" />
                   </filter>
                 </defs>
               </svg>
 
-              {/* 요청: 결과 컴포넌트가 늘어날 때마다 아래 SVG가 "겹쳐지며" 추가 */}
+              {/* 결과가 늘어날 때마다 아래 SVG가 "겹쳐지며" 추가 */}
               {Array.from({ length: extraLayers }).map((_, idx) => (
                 <svg
                   key={idx}
@@ -216,17 +217,8 @@ export default function MyPage() {
                         type="matrix"
                         values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
                       />
-                      <feBlend
-                        mode="normal"
-                        in2="BackgroundImageFix"
-                        result="effect1_dropShadow_50_139"
-                      />
-                      <feBlend
-                        mode="normal"
-                        in="SourceGraphic"
-                        in2="effect1_dropShadow_50_139"
-                        result="shape"
-                      />
+                      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_50_139" />
+                      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_50_139" result="shape" />
                     </filter>
                   </defs>
                 </svg>
@@ -237,14 +229,25 @@ export default function MyPage() {
           <div className={styles.recordsContent}>
             <h2 className={styles.sectionTitle}>최근 본 운세 기록</h2>
 
-            <div className={styles.tabs}>
+            {/* ✅ 탭 바: 알약은 1개만 두고, 위치/폭만 애니메이션 */}
+            <div className={styles.tabs} ref={tabsRef}>
+              <motion.div
+                className={styles.tabPill}
+                animate={{ x: indicator.left, width: indicator.width }}
+                transition={{ type: "spring", stiffness: 520, damping: 42, bounce: 0 }}
+              />
+
               {TABS.map((t) => {
                 const active = t.key === activeTab;
                 return (
                   <button
                     key={t.key}
+                    ref={(el) => {
+                      if (el) tabBtnRefs.current[t.key] = el;
+                    }}
                     className={`${styles.tab} ${active ? styles.tabActive : ""}`}
                     onClick={() => setActiveTab(t.key)}
+                    type="button"
                   >
                     {t.label}
                   </button>
