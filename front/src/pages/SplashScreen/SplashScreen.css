@@ -1,0 +1,191 @@
+@font-face {
+  font-family: "PaperoziSplash";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-1Thin.woff2")
+    format("woff2");
+  font-weight: 100;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PaperoziSplash";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-2ExtraLight.woff2")
+    format("woff2");
+  font-weight: 200;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PaperoziSplash";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-3Light.woff2")
+    format("woff2");
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PaperoziSplash";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-4Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PaperoziSplash";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-5Medium.woff2")
+    format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PaperoziSplash";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-6SemiBold.woff2")
+    format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PaperoziSplash";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2")
+    format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PaperoziSplash";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2")
+    format("woff2");
+  font-weight: 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PaperoziSplash";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-9Black.woff2")
+    format("woff2");
+  font-weight: 900;
+  font-display: swap;
+}
+
+/* SplashScreen.css (scoped) */
+
+.splashRoot {
+  /* local tokens (no global 영향) */
+  --splash-bg: #fbf3cf;
+  --splash-text: #2f2f2f;
+  --splash-btn: #f6eea8;
+
+  min-height: 100vh;
+  width: 100%;
+  background: var(--splash-bg);
+
+  position: relative;
+  overflow: hidden;
+}
+
+.splashRoot * {
+  box-sizing: border-box;
+}
+
+/* --- Background blob (SVG) --- */
+.splashRoot svg.splashScreen {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  width: min(92vw, 1200px);
+  height: auto;
+  max-height: 86vh;
+
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* --- Logo image --- */
+.splashRoot img.splashScreen {
+  position: absolute;
+  left: 50%;
+  top: 39%;
+  transform: translate(-50%, -50%);
+
+  width: clamp(152px, 13.8vw, 193px);
+  height: auto;
+
+  z-index: 2;
+}
+
+/* --- Title --- */
+.splashRoot h1 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  font-family: "PaperoziSplash", sans-serif;
+  margin: 0;
+  margin-top: 25px;
+  color: var(--splash-text);
+  font-weight: 600;
+  font-size: 40px;
+  letter-spacing: -0.02em;
+
+  z-index: 2;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* --- CTA button --- */
+.splashRoot button {
+  font-family: "PaperoziSplash", sans-serif;
+  font-weight: 600;
+    
+  position: absolute;
+  left: 50%;
+  top: 68.5%;
+  transform: translate(-50%, -50%);
+
+  width: min(680px, 72vw);
+  height: clamp(54px, 6.2vw, 78px);
+
+  border: 0;
+  border-radius: 18px;
+  background: var(--splash-btn);
+
+  color: var(--splash-text);
+  font-weight: 700;
+  font-size: clamp(18px, 2.2vw, 26px);
+
+  cursor: pointer;
+  z-index: 2;
+
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.splashRoot button:hover {
+  filter: brightness(0.98);
+}
+
+.splashRoot button:active {
+  transform: translate(-50%, -50%) scale(0.99);
+}
+
+.splashRoot button:focus-visible {
+  outline: 3px solid rgba(0, 0, 0, 0.18);
+  outline-offset: 4px;
+}
+
+/* Small screens: keep things centered and avoid overflow */
+@media (max-width: 420px) {
+  .splashRoot img.splashScreen {
+    top: 37.5%;
+  }
+
+  .splashRoot button {
+    top: 70.5%;
+    width: min(340px, 82vw);
+  }
+}
