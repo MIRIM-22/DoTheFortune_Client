@@ -1,13 +1,88 @@
+@font-face {
+  font-family: "Paperozi";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-1Thin.woff2")
+    format("woff2");
+  font-weight: 100;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperozi";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-2ExtraLight.woff2")
+    format("woff2");
+  font-weight: 200;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperozi";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-3Light.woff2")
+    format("woff2");
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperozi";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-4Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperozi";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-5Medium.woff2")
+    format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperozi";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-6SemiBold.woff2")
+    format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperozi";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2")
+    format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperozi";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2")
+    format("woff2");
+  font-weight: 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperozi";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-9Black.woff2")
+    format("woff2");
+  font-weight: 900;
+  font-display: swap;
+}
+
 /* ✅ Home 화면에만 적용되도록 스코프 고정 */
 .homePage {
   width: 100%;
+  /* ✅ 좌/우 컬럼 정렬을 맞추기 위한 공통 기준값 */
+  --homeCardH: 190px;
+  --homeCardGap: 26px;
 }
 
 /* 상단 헤더 바(사진 느낌) */
 .homePage .top-container {
   position: relative;
   width: 100%;
-  height: 110px;               /* 필요하면 100~120 사이로 조절 */
+  height: 110px; /* 필요하면 100~120 사이로 조절 */
   padding: 18px 22px;
   box-sizing: border-box;
 
@@ -15,16 +90,15 @@
   align-items: center;
   gap: 12px;
 
-  background: #f6eddc;         /* 연한 베이지톤 */
+  background: #f6eddc; /* 연한 베이지톤 */
   overflow: hidden;
-
 }
 
 /* 곡선 흰 배경 SVG (맨 뒤로 깔기) */
 .homePage .top-container > svg:first-of-type {
   position: absolute;
   left: 50%;
-  top: -40px;                  /* 곡선 위치 */
+  top: -40px; /* 곡선 위치 */
   transform: translateX(-50%);
   width: 120%;
   height: auto;
@@ -86,4 +160,514 @@
     width: 40px;
     height: 40px;
   }
+}
+
+/* =============================
+   HomeDashboard (Header~Footer 사이)
+============================== */
+
+.homePage .homeDashboard {
+  width: 100%;
+  background: #fbf5de; /* 연한 베이지 */
+  padding: 56px 0 84px;
+}
+
+.homePage .homeDashboard__inner {
+  width: min(1200px, calc(100% - 140px));
+  margin: 0 auto;
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+@media (max-width: 1200px) {
+  .homePage .homeDashboard__inner {
+    width: calc(100% - 48px);
+  }
+}
+
+.homePage .homeDashboard__col {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* ✅ pill은 가운데 */
+}
+
+.homePage .homeDashboard__divider {
+  width: 1px;
+  align-self: stretch;
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 999px;
+  margin-top: 18px;
+  margin-bottom: 18px;
+}
+
+.homePage .homeDashboard__pill {
+  font-family: "Paperozi";
+  position: relative;
+  isolation: isolate;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 14px 26px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+  font-weight: 600;
+  margin-bottom: 28px;
+  overflow: visible;
+}
+
+.homePage .homeDashboard__pillBg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.homePage .homeDashboard__pillLabel {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 0 26px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+}
+
+.homePage .homeDashboard__pill--svg {
+  width: 320px;
+  height: 72px;
+  max-width: 100%;
+
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.08));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.homePage .homeDashboard__cards {
+  display: grid;
+  gap: var(--homeCardGap);
+  width: 100%;
+}
+
+.homePage .homeDashboard__card {
+  position: relative;
+  width: 100%;
+  height: var(--homeCardH);
+  border: none;
+  border-radius: 22px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.1);
+}
+
+.homePage .homeDashboard__cardOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 30%,
+    rgba(0, 0, 0, 0.75) 100%
+  );
+}
+
+.homePage .homeDashboard__cardText {
+  position: absolute;
+  left: 22px;
+  bottom: 18px;
+  color: #fff;
+  z-index: 1;
+}
+
+.homePage .homeDashboard__rank {
+  font-family: "Paperozi";
+  font-weight: 800;
+  font-size: 34px;
+  line-height: 1;
+  margin-bottom: 8px;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+.homePage .homeDashboard__title {
+  font-family: "Paperozi";
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.2;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+.homePage .homeDashboard__panel {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 22px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--homeCardGap);
+  padding: 0;
+}
+
+.homePage .homeDashboard__block {
+  height: var(--homeCardH);
+  box-sizing: border-box;
+
+  text-align: center;
+  padding: 16px 18px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.homePage .homeDashboard__blockTitle {
+  margin-top: 0;
+  font-weight: 800;
+  font-size: 18px;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+@media (max-width: 980px) {
+  .homePage .homeDashboard__inner {
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .homePage .homeDashboard__divider {
+    width: 100%;
+    height: 1px;
+  }
+
+  .homePage {
+    --homeCardH: 170px;
+  }
+
+  .homePage .homeDashboard__pill--svg {
+    height: 64px;
+    width: 280px;
+  }
+}
+
+/* =========================
+   ✅ 운세 요약
+========================= */
+
+.homePage .homeDashboard__summaryGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+@media (min-width: 720px) {
+  .homePage .homeDashboard__summaryGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+}
+
+.homePage .homeDashboard__summaryItem {
+  position: relative;
+  border-radius: 14px;
+  padding: 12px 12px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+  will-change: transform;
+  cursor: default;
+}
+
+.homePage .homeDashboard__summaryItem:hover {
+  transform: scale(1.045);
+  z-index: 6;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.12);
+}
+
+.homePage .homeDashboard__summaryLabel {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  color: rgba(0, 0, 0, 0.76);
+  margin-bottom: 6px;
+}
+
+.homePage .homeDashboard__summaryText {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  letter-spacing: -0.2px;
+  color: rgba(0, 0, 0, 0.76);
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.homePage .homeDashboard__summaryItem:hover .homeDashboard__summaryText {
+  display: block;
+  overflow: visible;
+}
+
+/* =========================
+   ✅ (NEW) 행운의 컬러 / 행운의 숫자 : 나란히 레이아웃
+   - 높이: 카드 2장 + gap 만큼 차지
+========================= */
+
+.homePage .homeDashboard__pairRow {
+  height: calc(var(--homeCardH) * 2 + var(--homeCardGap));
+  box-sizing: border-box;
+
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  align-items: stretch;
+
+  padding: 16px 18px;
+  text-align: center;
+
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.homePage .homeDashboard__pairCol {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 8px 10px;
+}
+
+.homePage .homeDashboard__pairTitle {
+  font-family: "Paperozi";
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: -0.4px;
+  margin: 0;
+}
+
+.homePage .homeDashboard__pairDivider {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 999px;
+  margin: 18px 0;
+}
+
+@media (max-width: 720px) {
+  .homePage .homeDashboard__pairRow {
+    height: auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1px auto;
+    gap: 14px;
+  }
+
+  .homePage .homeDashboard__pairDivider {
+    margin: 0;
+  }
+}
+
+/* ✅ 행운의 컬러 카드 */
+.homePage .homeDashboard__luckyRow {
+  --lucky: #d9d9d9;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+
+  padding: 14px 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.06);
+}
+
+.homePage .homeDashboard__pairCol .homeDashboard__luckyRow {
+  margin-top: 0;
+  width: min(460px, 100%);
+}
+
+.homePage .homeDashboard__colorChip {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  flex: 0 0 auto;
+  background: var(--lucky);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.92),
+    0 14px 26px rgba(0, 0, 0, 0.14);
+}
+
+.homePage .homeDashboard__luckyText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.homePage .homeDashboard__luckyMain {
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: -0.3px;
+  color: rgba(0, 0, 0, 0.82);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.homePage .homeDashboard__luckySub {
+  width: fit-content;
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(0, 0, 0, 0.62);
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 999px;
+  padding: 6px 10px;
+}
+
+.homePage .homeDashboard__hex {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(0, 0, 0, 0.58);
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 999px;
+  padding: 7px 11px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.06);
+  letter-spacing: 0.3px;
+}
+
+/* ✅ 행운의 숫자 */
+.homePage .homeDashboard__numberWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.homePage .homeDashboard__pairCol .homeDashboard__numberWrap {
+  margin-top: 0;
+}
+
+.homePage .homeDashboard__numberPill {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.4px;
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 420px) {
+  .homePage .homeDashboard__hex {
+    display: none;
+  }
+}
+
+.homePage .homeDashboard__pairRow {
+  border-top: 0 !important;
+  padding-top: 18px;
+}
+
+/* 운세요약(첫 블록) 아래에만 선이 오도록 */
+.homePage .homeDashboard__panel > .homeDashboard__block:first-child {
+  position: relative;
+  border-bottom: 0 !important; /* 기존 border-bottom이 있으면 제거 */
+  padding-bottom: 22px;
+}
+
+.homePage .homeDashboard__panel > .homeDashboard__block:first-child::after {
+  content: "";
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 0;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+}
+
+/* ✅ 행운의 컬러: 동그라미 → 이름 → 오행 → 헥사코드 */
+.homePage .homeDashboard__luckyRow {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start;
+  gap: 14px;
+}
+
+.homePage .homeDashboard__colorChip {
+  width: 54px;
+  height: 54px;
+  border-radius: 999px;
+  background: var(--lucky);
+  flex: 0 0 auto;
+}
+
+.homePage .homeDashboard__luckyText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+
+.homePage .homeDashboard__luckyMain {
+  font-weight: 900;
+  font-size: 22px;
+  line-height: 1.05;
+}
+
+.homePage .homeDashboard__luckySub {
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 1.1;
+}
+
+.homePage .homeDashboard__luckyHex {
+  width: fit-content;
+  font-size: 14px;
+  font-weight: 900;
+  color: rgba(0, 0, 0, 0.58);
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 999px;
+  padding: 8px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.06);
+  letter-spacing: 0.3px;
 }
