@@ -290,25 +290,8 @@ export default function SpousePage() {
     }
   };
 
-  const handleShare = async () => {
-    try {
-      // 현재 페이지의 상태를 JSON으로 직렬화
-      const shareData = {
-        type: "ai_spouse",
-        spouseData: spouseData,
-      };
-      
-      // Base64로 인코딩
-      const encoded = btoa(JSON.stringify(shareData));
-      const shareUrl = `${window.location.origin}/future-partner?share=${encoded}`;
-      
-      // 클립보드에 복사
-      await navigator.clipboard.writeText(shareUrl);
-      alert("링크가 클립보드에 복사되었습니다! 📋\n\n" + shareUrl);
-    } catch (err) {
-      console.error("공유 링크 생성 실패:", err);
-      alert("링크 생성에 실패했습니다. 다시 시도해 주세요.");
-    }
+  const handleShare = () => {
+    alert("링크 생성 기능은 추후 개발 예정입니다.");
   };
 
   if (loading) {
@@ -343,7 +326,7 @@ export default function SpousePage() {
 
         <ContentCard>
           <TextGroup>
-            <MainTitle>나의 배우자 보기</MainTitle>
+            <MainTitle>나의 미래 배우자는?</MainTitle>
             <Subtitle>실제 인물을 예측하는 것이 아니며, 사주 성향을 바탕으로 시각화한 이미지입니다.</Subtitle>
           </TextGroup>
 

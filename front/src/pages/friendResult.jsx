@@ -362,7 +362,7 @@ export default function FriendResult() {
           <Big1 />
 
           <Content>
-            <Title>나와 유사한 친구 보기</Title>
+            <Title>유사 사주 친구 결과</Title>
 
             <SmallRow>
               <SmallCloud>
@@ -439,27 +439,8 @@ export default function FriendResult() {
                 관계 저장하기
               </Btn>
               <Btn 
-                onClick={async () => {
-                  try {
-                    if (!result) return;
-                    
-                    // 현재 페이지의 상태를 JSON으로 직렬화
-                    const shareData = {
-                      type: "similar_friend",
-                      result: result,
-                    };
-                    
-                    // Base64로 인코딩
-                    const encoded = btoa(JSON.stringify(shareData));
-                    const shareUrl = `${window.location.origin}/similar-friend?share=${encoded}`;
-                    
-                    // 클립보드에 복사
-                    await navigator.clipboard.writeText(shareUrl);
-                    alert("링크가 클립보드에 복사되었습니다! 📋\n\n" + shareUrl);
-                  } catch (err) {
-                    console.error("공유 링크 생성 실패:", err);
-                    alert("링크 생성에 실패했습니다. 다시 시도해 주세요.");
-                  }
+                onClick={() => {
+                  alert("링크 생성 기능은 추후 개발 예정입니다.");
                 }}
               >
                 결과 공유하기
