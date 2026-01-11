@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./CompatibilityResult.css";
 import Logo from "../../assets/Logo.svg";
+import { createRecord } from "../../utils/api";
 
 // Figma: 궁합결과 화면 구현
 export default function CompatibilityResult() {
@@ -32,24 +33,24 @@ export default function CompatibilityResult() {
   const resultSections = compatibility
     ? [
         {
-          title: `두 사람의 궁합 점수 : ${Math.round(compatibility.score)}점`,
+          title: `두 사람의 궁합 점수 : ${Math.round(compatibility.score || 0)}점`,
           body: compatibility.analysis || "",
         },
         {
           title: "🗣️ 대화 방식",
-          body: compatibility.communication_analysis || "",
+          body: compatibility.communication_analysis || compatibility.CommunicationAnalysis || "",
         },
         {
           title: "💖 감정·성격",
-          body: compatibility.emotion_analysis || "",
+          body: compatibility.emotion_analysis || compatibility.EmotionAnalysis || "",
         },
         {
           title: "🏠 목표·생활 방식",
-          body: compatibility.lifestyle_analysis || "",
+          body: compatibility.lifestyle_analysis || compatibility.LifestyleAnalysis || "",
         },
         {
           title: "⚡ 주의할 점",
-          body: compatibility.caution_analysis || "",
+          body: compatibility.caution_analysis || compatibility.CautionAnalysis || "",
         },
       ]
     : [
@@ -76,14 +77,83 @@ export default function CompatibilityResult() {
         },
       ];
 
-  const handleSave = () => {
-    // 정보 저장 로직 자리
-    console.log("정보 저장하기");
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = async () => {
+    if (saving || saved) return;
+
+    if (!compatibility) {
+      alert("저장할 궁합 결과가 없습니다.");
+      return;
+    }
+
+    // 상대방 이름이 없으면 저장하지 않음
+    if (!otherInfo?.userName || otherInfo.userName.trim() === "") {
+      alert("상대방 이름이 없어 저장할 수 없습니다.");
+      return;
+    }
+
+    try {
+      setSaving(true);
+      
+      // 궁합 결과 내용 구성
+      const score = compatibility?.score || 0;
+      const content = `두 사람의 궁합 점수: ${Math.round(score)}점\n${user1Name}과 ${user2Name}의 궁합 결과`;
+      
+      // 메타데이터 구성
+      const metadata = JSON.stringify({
+        user1_name: myInfo?.userName || "",
+        user2_name: otherInfo?.userName || "",
+        score: score,
+        analysis: compatibility?.analysis || "",
+        communication_analysis: compatibility?.communication_analysis || compatibility?.CommunicationAnalysis || "",
+        emotion_analysis: compatibility?.emotion_analysis || compatibility?.EmotionAnalysis || "",
+        lifestyle_analysis: compatibility?.lifestyle_analysis || compatibility?.LifestyleAnalysis || "",
+        caution_analysis: compatibility?.caution_analysis || compatibility?.CautionAnalysis || "",
+      });
+
+      console.log("저장 요청 데이터:", { type: "compatibility", content, metadata });
+
+      const result = await createRecord({
+        type: "compatibility",
+        content: content,
+        metadata: metadata,
+      });
+
+      console.log("저장 성공:", result);
+      setSaved(true);
+      alert("저장이 완료되었습니다! ✅");
+    } catch (err) {
+      console.error("저장 실패 상세:", err);
+      console.error("에러 스택:", err.stack);
+      const errorMessage = err.message || err.toString() || "저장 중 오류가 발생했습니다. 다시 시도해 주세요.";
+      alert(`저장 실패: ${errorMessage}`);
+      setSaving(false);
+    }
   };
 
-  const handleShare = () => {
-    // 결과 공유 로직 자리
-    console.log("결과 공유하기");
+  const handleShare = async () => {
+    try {
+      // 현재 페이지의 상태를 JSON으로 직렬화
+      const shareData = {
+        type: "compatibility",
+        compatibility: compatibility,
+        myInfo: myInfo,
+        otherInfo: otherInfo,
+      };
+      
+      // Base64로 인코딩
+      const encoded = btoa(JSON.stringify(shareData));
+      const shareUrl = `${window.location.origin}/result?share=${encoded}`;
+      
+      // 클립보드에 복사
+      await navigator.clipboard.writeText(shareUrl);
+      alert("링크가 클립보드에 복사되었습니다! 📋\n\n" + shareUrl);
+    } catch (err) {
+      console.error("공유 링크 생성 실패:", err);
+      alert("링크 생성에 실패했습니다. 다시 시도해 주세요.");
+    }
   };
 
   return (
@@ -250,8 +320,13 @@ export default function CompatibilityResult() {
 
           {/* 하단 버튼 두 개 */}
           <div className="compat-actions">
-            <button className="compat-action-btn" type="button" onClick={handleSave}>
-              정보 저장하기
+            <button 
+              className="compat-action-btn" 
+              type="button" 
+              onClick={handleSave}
+              disabled={saving || saved}
+            >
+              {saving ? "저장 중..." : saved ? "저장 완료 ✅" : "정보 저장하기"}
             </button>
             <button className="compat-action-btn" type="button" onClick={handleShare}>
               결과 공유하기

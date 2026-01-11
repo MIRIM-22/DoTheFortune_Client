@@ -44,6 +44,8 @@ async function apiRequest(endpoint, options = {}) {
     },
   };
 
+  console.log('API Request:', { method: options.method || 'GET', url, hasToken: !!token });
+
   try {
     const response = await fetch(url, {
       ...defaultOptions,
@@ -54,9 +56,13 @@ async function apiRequest(endpoint, options = {}) {
       },
     });
 
+    console.log('API Response:', { status: response.status, statusText: response.statusText, url });
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || errorData.message || `HTTP error! status: ${response.status}`);
+      console.error('API Error Response:', errorData);
+      const errorMessage = errorData.error || errorData.message || `HTTP error! status: ${response.status}`;
+      throw new Error(errorMessage);
     }
 
     return await response.json();
@@ -79,6 +85,19 @@ export async function login(email, password) {
   
   if (response.token) {
     setToken(response.token);
+  }
+  
+  // 사용자 정보 저장
+  if (response.user) {
+    if (response.user.name) {
+      localStorage.setItem('name', response.user.name);
+    }
+    if (response.user.email) {
+      localStorage.setItem('email', response.user.email);
+    }
+  } else {
+    // user가 없으면 email을 name으로도 저장 (임시)
+    localStorage.setItem('email', email);
   }
   
   return response;
@@ -152,6 +171,29 @@ export async function calculateCompatibility(user2Id) {
 }
 
 /**
+ * 임시 사용자 등록 (상대방 정보로 궁합 계산용)
+ * @param {Object} userData - 회원가입 정보
+ */
+export async function registerTempUser(userData) {
+  const response = await apiRequest('/auth/register', {
+    method: 'POST',
+    body: JSON.stringify(userData),
+  });
+  
+  return response;
+}
+
+/**
+ * 현재 사용자 ID 조회
+ */
+export async function getCurrentUserId() {
+  const response = await apiRequest('/auth/me', {
+    method: 'GET',
+  });
+  return response.user_id || response.id;
+}
+
+/**
  * 오늘의 운세 조회
  */
 export async function getTodayFortune() {
@@ -185,5 +227,53 @@ export async function getSimilarUserMatches() {
 export async function getFortuneInfo() {
   return apiRequest('/fortune/info', {
     method: 'GET',
+  });
+}
+
+/**
+ * 최근 기록 조회
+ * @param {number} limit - 반환할 최대 기록 수 (기본값: 20)
+ */
+export async function getRecentRecords(limit = 20) {
+  return apiRequest(`/records?limit=${limit}`, {
+    method: 'GET',
+  });
+}
+
+/**
+ * 배우자 이미지 조회
+ */
+export async function getSpouseImage() {
+  return apiRequest('/records/spouse-image', {
+    method: 'GET',
+  });
+}
+
+/**
+ * 기록 생성
+ * @param {Object} recordData - 기록 데이터
+ * @param {string} recordData.type - 기록 타입 (compatibility, ai_spouse, today_fortune 등)
+ * @param {string} recordData.content - 기록 내용
+ * @param {string} recordData.image_url - 이미지 URL (선택사항)
+ * @param {string} recordData.metadata - 메타데이터 JSON 문자열 (선택사항)
+ */
+export async function createRecord(recordData) {
+  // image_url이 없으면 전송하지 않음
+  const requestData = {
+    type: recordData.type,
+    content: recordData.content,
+  };
+  
+  if (recordData.image_url) {
+    requestData.image_url = recordData.image_url;
+  }
+  
+  if (recordData.metadata) {
+    requestData.metadata = recordData.metadata;
+  }
+
+  return apiRequest('/records', {
+    method: 'POST',
+    body: JSON.stringify(requestData),
   });
 }

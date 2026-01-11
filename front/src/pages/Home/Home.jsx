@@ -108,6 +108,7 @@ async function getHomeDaily(nickname) {
 
 export default function Home() {
   const navigate = useNavigate();
+  const userName = localStorage.getItem("name") || "";
 
   return (
     <div className="homePage">
@@ -155,7 +156,7 @@ export default function Home() {
       </div>
 
       {/* Dashboard */}
-      <HomeDashboard onNavigate={navigate} nickname="희진" />
+      <HomeDashboard onNavigate={navigate} nickname={userName} />
 
       {/* Footer */}
       <Footer />
