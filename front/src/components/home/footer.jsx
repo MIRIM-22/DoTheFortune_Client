@@ -8,7 +8,7 @@ import Github from "../../assets/Github.png";
 
 export default function Footer() {
   const navigate = useNavigate();
-
+  
   function goGitHub() {
     window.location.href = "https://github.com/MIRIM-22";
   }
@@ -34,8 +34,8 @@ export default function Footer() {
       {/* Content overlay */}
       <div css={content}>
         <div css={left}>
-          <div
-            css={brandRow}
+          <div 
+            css={brandRow} 
             onClick={() => navigate("/home")}
             style={{ cursor: "pointer" }}
           >
@@ -47,12 +47,7 @@ export default function Footer() {
           </p>
         </div>
 
-        <button
-          type="button"
-          css={githubBtn}
-          onClick={goGitHub}
-          aria-label="GitHub"
-        >
+        <button type="button" css={githubBtn} onClick={goGitHub} aria-label="GitHub">
           <img css={githubIcon} src={Github} alt="" aria-hidden="true" />
         </button>
       </div>
@@ -100,15 +95,15 @@ const brandRow = css`
 `;
 
 const logo = css`
-  width: 80px;
-  height: 80px;
+  width: clamp(34px, 3.2vw, 48px);
+  height: auto;
   display: block;
 `;
 
 const title = css`
-  margin: -10px;
+  margin: 0;
   font-size: clamp(22px, 2.2vw, 34px);
-  font-weight: 600;
+  font-weight: 800;
   line-height: 1.1;
   color: #111;
   letter-spacing: -0.02em;
