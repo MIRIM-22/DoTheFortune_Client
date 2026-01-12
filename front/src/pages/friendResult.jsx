@@ -42,7 +42,7 @@ const Page = styled.div`
 const CardWrap = styled.div`
   position: relative;
   width: 900px;
-  height: 1250px;
+  height: 1000px;
   margin: 0 auto;
 `;
 
@@ -438,7 +438,13 @@ export default function FriendResult() {
               >
                 관계 저장하기
               </Btn>
-              <Btn>결과 공유하기</Btn>
+              <Btn 
+                onClick={() => {
+                  alert("링크 생성 기능은 추후 개발 예정입니다.");
+                }}
+              >
+                결과 공유하기
+              </Btn>
             </Buttons>
           </Content>
         </CardWrap>

@@ -88,6 +88,12 @@ export default function CompatibilityResult() {
       return;
     }
 
+    // 상대방 이름이 없으면 저장하지 않음
+    if (!otherInfo?.userName || otherInfo.userName.trim() === "") {
+      alert("상대방 이름이 없어 저장할 수 없습니다.");
+      return;
+    }
+
     try {
       setSaving(true);
       
@@ -128,8 +134,7 @@ export default function CompatibilityResult() {
   };
 
   const handleShare = () => {
-    // 결과 공유 로직 자리
-    console.log("결과 공유하기");
+    alert("링크 생성 기능은 추후 개발 예정입니다.");
   };
 
   return (
