@@ -242,7 +242,11 @@ export default function MyPage() {
         <div className={styles.profileContent}>
           <div className={styles.profileComponents}>
             <div className={styles.avatar}>
-              <img src={ProfileIcon} alt="Profile" className={styles.avatarCircle} />
+              <img
+                src={ProfileIcon}
+                alt="Profile"
+                className={styles.avatarCircle}
+              />
             </div>
 
             <div className={styles.profileText}>
