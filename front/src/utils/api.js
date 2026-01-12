@@ -241,6 +241,15 @@ export async function getRecentRecords(limit = 20) {
 }
 
 /**
+ * 배우자 이미지 조회
+ */
+export async function getSpouseImage() {
+  return apiRequest('/records/spouse-image', {
+    method: 'GET',
+  });
+}
+
+/**
  * 기록 생성
  * @param {Object} recordData - 기록 데이터
  * @param {string} recordData.type - 기록 타입 (compatibility, ai_spouse, today_fortune 등)

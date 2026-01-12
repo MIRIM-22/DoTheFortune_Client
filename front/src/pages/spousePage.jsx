@@ -2,17 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
 import logo from '../assets/logo.svg';
-import { createRecord, getFortuneInfo } from '../utils/api';
-
-// 배우자 이미지 목록 (assets 폴더에 이미지 파일들을 추가하면 됩니다)
-// 예: spouse1.jpg, spouse2.jpg, spouse3.jpg 등
-// 임시로 기본 이미지들을 사용합니다. 실제 이미지 파일이 있으면 import 해서 사용하세요
-const SPOUSE_IMAGES = [
-  // 여기에 배우자 이미지 파일들을 import 해주세요
-  // 예: import spouse1 from '../assets/spouse1.jpg';
-  // import spouse2 from '../assets/spouse2.jpg';
-  // 등등...
-];
+import { createRecord, getSpouseImage } from '../utils/api';
 
 const GlobalStyle = createGlobalStyle`
   * { box-sizing: border-box; }
@@ -60,18 +50,18 @@ const Title = styled.div`
 
 const ContentCard = styled.div`
   width: 90vw;
-  height: 85vh;
+  height: 75vh;
   max-width: 1280px;
   background-image: url("data:image/svg+xml,%3Csvg width='1508' height='865' viewBox='0 0 1508 865' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg filter='url(%23filter0_d_234_1206)'%3E%3Cpath d='M1491.83 334.212C1578.67 765.782 1183.52 912.873 858.023 838.596C532.521 764.319 43.1512 986.556 4 473.084C4 186.214 65.2367 -107.174 636.606 54.1686C809.871 103.095 1378.06 -231.188 1491.83 334.212Z' fill='white'/%3E%3C/g%3E%3Cdefs%3E%3Cfilter id='filter0_d_234_1206' x='0' y='0' width='1508' height='865' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'%3E%3CfeFlood flood-opacity='0' result='BackgroundImageFix'/%3E%3CfeColorMatrix in='SourceAlpha' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0' result='hardAlpha'/%3E%3CfeOffset dy='4'/%3E%3CfeGaussianBlur stdDeviation='2'/%3E%3CfeComposite in2='hardAlpha' operator='out'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0'/%3E%3CfeBlend mode='normal' in2='BackgroundImageFix' result='effect1_dropShadow_234_1206'/%3E%3CfeBlend mode='normal' in='SourceGraphic' in2='effect1_dropShadow_234_1206' result='shape'/%3E%3C/filter%3E%3C/defs%3E%3C/svg%3E");
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
-  padding: 4vh 5vw;
+  padding: 3vh 5vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
 `;
 
 const TextGroup = styled.div`
@@ -185,6 +175,38 @@ const SaveButton = styled.button`
   }
 `;
 
+const ShareButton = styled.button`
+  width: 100%;
+  max-width: 500px;
+  height: 48px;
+  background: #E8F4F8;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c2c2c;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 400;
+  margin-top: 12px;
+
+  &:hover {
+    background: #D0E8F0;
+    transform: translateY(-2px);
+  }
+  &:active {
+    transform: translateY(0);
+  }
+`;
+
+const ButtonContainer = styled.div`
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 const LoadingMessage = styled.div`
   font-size: 18px;
   font-weight: bold;
@@ -207,29 +229,29 @@ export default function SpousePage() {
     const fetchSpouseData = async () => {
       try {
         setLoading(true);
+        setError(null);
         
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        const response = await getSpouseImage();
+        
+        if (response.status !== 'success' || !response.data) {
+          throw new Error('데이터를 가져오지 못했습니다.');
+        }
 
-        const DUMMY_DATA = {
-          imageUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80", // 예시 이미지 (Unsplash)
-          impression: ["선한 인상", "부드러운 선", "웃는 상"],
-          fashion: ["단정한 느낌", "깔끔한 셔츠", "댄디룩"],
-          mood: ["자상함", "가정적인", "따뜻한 성격"],
-          job: ["IT 개발자", "연구원"]
+        const data = response.data;
+
+        const spouseData = {
+          imageUrl: data.image_url, // 예: /assets/ai_f/wood_1.png
+          impression: data.attributes.impression || [],
+          fashion: data.attributes.fashion || [],
+          mood: data.attributes.mood || [],
+          job: data.attributes.job || [],
         };
 
-        setSpouseData(DUMMY_DATA);
-
-        /*
-        const response = await fetch('https://api.your-backend.com/spouse-result');
-        if (!response.ok) throw new Error('서버 에러');
-        const data = await response.json();
-        setSpouseData(data);
-        */
+        setSpouseData(spouseData);
 
       } catch (err) {
-        console.error(err);
-        setError('결과를 가져오지 못했습니다.');
+        console.error('배우자 이미지 조회 실패:', err);
+        setError(err.message || '결과를 가져오지 못했습니다.');
       } finally {
         setLoading(false);
       }
@@ -266,6 +288,10 @@ export default function SpousePage() {
       setSaved(false);
       alert(err.message || "저장 중 오류가 발생했습니다. 다시 시도해 주세요.");
     }
+  };
+
+  const handleShare = () => {
+    alert("링크 생성 기능은 추후 개발 예정입니다.");
   };
 
   if (loading) {
@@ -346,9 +372,14 @@ export default function SpousePage() {
             </InfoGrid>
           </ResultSection>
 
-          <SaveButton onClick={handleSave}>
-            {saved ? '저장 완료! ✅' : '나의 미래 배우자 저장하기'}
-          </SaveButton>
+          <ButtonContainer>
+            <SaveButton onClick={handleSave}>
+              {saved ? '저장 완료! ✅' : '나의 미래 배우자 저장하기'}
+            </SaveButton>
+            <ShareButton onClick={handleShare}>
+              공유하기
+            </ShareButton>
+          </ButtonContainer>
         </ContentCard>
       </Container>
     </>

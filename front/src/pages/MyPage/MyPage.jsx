@@ -42,9 +42,9 @@ export default function MyPage() {
         
         setUserInfo({ name, email });
 
-        // 최근 기록 가져오기
+        // 최근 기록 가져오기 (6개로 제한)
         try {
-          const recordsData = await getRecentRecords(20);
+          const recordsData = await getRecentRecords(6);
           if (recordsData && recordsData.records) {
             // 타입 변환: backend 타입 -> frontend 타입
             const formattedRecords = recordsData.records.map((record) => {
@@ -70,15 +70,35 @@ export default function MyPage() {
               }
               
               // 궁합 결과의 경우 더 자세한 제목 생성
-              let title = record.content || "기록";
+              // 상대방 이름이 "상대방"이면 필터링 (null 또는 undefined도 체크)
+              if (record.type === "compatibility" && metadata) {
+                const user2Name = metadata.user2_name || "";
+                if (!user2Name || user2Name.trim() === "" || user2Name === "상대방") {
+                  // 상대방 이름이 없거나 "상대방"이면 이 기록을 제외
+                  return null;
+                }
+              }
+              
+              let title = "기록";
               if (record.type === "compatibility" && metadata) {
                 const score = metadata.score ? Math.round(metadata.score) : "";
                 const user2Name = metadata.user2_name || "";
                 if (score && user2Name) {
-                  title = `${user2Name}님과의 궁합: ${score}점`;
+                  // 이름이 3글자 이상이면 앞 2글자만 사용
+                  const shortName = user2Name.length > 2 ? user2Name.substring(0, 2) : user2Name;
+                  title = `${shortName}님 궁합 ${score}점`;
                 } else if (score) {
-                  title = `궁합 결과: ${score}점`;
+                  title = `궁합 ${score}점`;
                 }
+              } else if (record.type === "ai_spouse") {
+                title = "나의 미래 배우자";
+              } else if (record.type === "similar_friend" || record.type === "today_fortune") {
+                title = "유사 친구";
+              } else {
+                // content에서 첫 줄만 가져오기 (최대 15자)
+                const content = record.content || "";
+                const firstLine = content.split('\n')[0];
+                title = firstLine.length > 15 ? firstLine.substring(0, 15) + "..." : firstLine;
               }
               
               return {
@@ -90,7 +110,8 @@ export default function MyPage() {
                 recordType: record.type, // 원본 타입 저장
                 recordData: record, // 전체 기록 데이터 저장
               };
-            });
+            })
+            .filter(record => record !== null); // null인 기록 제거
             setRecords(formattedRecords);
           }
         } catch (err) {
@@ -348,8 +369,9 @@ export default function MyPage() {
                     key={item.id} 
                     title={item.title}
                     onClick={() => {
-                      // 궁합 결과인 경우 상세 페이지로 이동
+                      // 기록 타입에 따라 해당 페이지로 이동
                       if (item.recordType === "compatibility" && item.metadata) {
+                        // 궁합 결과 페이지로 이동
                         navigate("/result", {
                           state: {
                             compatibility: {
@@ -366,6 +388,22 @@ export default function MyPage() {
                             otherInfo: {
                               userName: item.metadata.user2_name || "상대방",
                             },
+                          },
+                        });
+                      } else if (item.recordType === "ai_spouse") {
+                        // 미래 배우자 페이지로 이동 (데이터를 state로 전달)
+                        navigate("/future-partner", {
+                          state: {
+                            recordData: item.recordData,
+                            metadata: item.metadata,
+                          },
+                        });
+                      } else if (item.recordType === "similar_friend" || item.recordType === "today_fortune") {
+                        // 유사 친구 또는 오늘의 운세 페이지로 이동
+                        navigate("/similar-friend", {
+                          state: {
+                            recordData: item.recordData,
+                            metadata: item.metadata,
                           },
                         });
                       }
